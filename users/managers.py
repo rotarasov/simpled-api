@@ -4,19 +4,23 @@ from django.utils.translation import ugettext_lazy as _
 
 class UserManager(BaseUserManager):
 
-    def create_user(self, email, password, **extra_fields):
+    def create_user(self, email, password, first_name, last_name, **extra_fields):
         """
         Create and save a User with the given email and password.
         """
         if not email:
             raise ValueError(_('The Email must be set'))
+        if not first_name:
+            raise ValueError(_('First name must be set'))
+        if not last_name:
+            raise ValueError(_('Last name must be set'))
         email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+        user = self.model(email=email, first_name=first_name, last_name=last_name, **extra_fields)
         user.set_password(password)
         user.save()
         return user
 
-    def create_superuser(self, email, password, **extra_fields):
+    def create_superuser(self, email, password, first_name, last_name, **extra_fields):
         """
         Create and save a SuperUser with the given email and password.
         """
@@ -28,4 +32,4 @@ class UserManager(BaseUserManager):
             raise ValueError(_('Superuser must have is_staff=True.'))
         if extra_fields.get('is_superuser') is not True:
             raise ValueError(_('Superuser must have is_superuser=True.'))
-        return self.create_user(email, password, **extra_fields)
+        return self.create_user(email, password, first_name, last_name, **extra_fields)
