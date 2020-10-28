@@ -10,14 +10,25 @@ class Course(models.Model):
         """
             Short alpha-2 code taken from ISO 639-1
         """
-        Russian = 'ru', _('Russian')
-        English = 'en', _('English')
-        Chinese = 'zh', _('Chinese')
-        Spanish = 'es', _('Spanish')
-        French = 'fr', _('French')
+        RUSSIAN = 'ru', _('Russian')
+        ENGLISH = 'en', _('English')
+        CHINESE = 'zh', _('Chinese')
+        SPANISH = 'es', _('Spanish')
+        FRENCH = 'fr', _('French')
 
     class Categories(models.TextChoices):
+        MUSIC = 'music', _('Music')
+        PHOTOGRAPHY = 'photography', _('Photography')
+        DESIGN = 'design', _('Design')
+        ARTS = 'arts', _('Arts')
+        BUSINESS = 'business', _('Business')
+        LANGUAGE_LEARNING = 'language_learning', _('Language learning')
         PROGRAMMING = 'programming', _('Programming')
+        HEALTH = 'health', _('Health')
+        SOCIAL_SCIENCE = 'social_science', _('Social science')
+        ENGINEERING = 'engineering', _('Engineering')
+        MATHEMATICS = 'math', _('Mathematics')
+
 
     image = models.ImageField(_('image'), upload_to='course_pics', default='default.png')
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
