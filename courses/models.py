@@ -3,7 +3,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from simpled import settings
 
-# TODO add category
 # TODO add default for creator field to match current authorized user
 class Course(models.Model):
     class Languages(models.TextChoices):
