@@ -29,7 +29,7 @@ class Course(models.Model):
         MATHEMATICS = 'math', _('Mathematics')
 
 
-    image = models.ImageField(_('image'), upload_to='course_pics', default='default.png')
+    image = models.ImageField(_('image'), upload_to='course_pics', default='course_pics/default.png')
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                 related_name='created_courses', related_query_name='created_course')
     title = models.CharField(_('title'), max_length=100, unique=True)
