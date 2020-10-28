@@ -85,3 +85,5 @@ media/
 *.pyc
 *.db
 *.pid
+# Usexr-specific stuff:
+.idea
