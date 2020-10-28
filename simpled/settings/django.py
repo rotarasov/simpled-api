@@ -1,4 +1,5 @@
 import environ
+import django_heroku
 
 
 # Read .env file
@@ -115,4 +116,9 @@ STATIC_ROOT = PUBLIC_DIR('static')
 STATIC_URL = env.str('STATIC_URL', default='/static/')
 MEDIA_ROOT = PUBLIC_DIR('media')
 MEDIA_URL = env.str('MEDIA_URL', default='/media/')
+
+
+# Configure Heroku
+
+django_heroku.settings(locals(), databases=False, secret_key=False, allowed_hosts=False)
 
