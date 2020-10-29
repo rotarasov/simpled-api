@@ -6,6 +6,8 @@ from .models import Course
 from .serializers import CourseSerializer
 
 
+# TODO: add course list
+
 @api_view(http_method_names=['GET'])
 def get_all_categories(request):
     categories = {
