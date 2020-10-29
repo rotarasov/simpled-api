@@ -1,22 +1,19 @@
 import environ
 import django_heroku
 
-
-# Read .env file
-env = environ.Env()
-environ.Env.read_env('.env')
-
+from . import config
+from .utils import config_media_storage
 
 # Build paths inside the project like this: BASE_DIR('subdir').
 BASE_DIR = environ.Path(__file__) - 3
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.str('SECRET_KEY')
+SECRET_KEY = config.env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', default=False)
+DEBUG = config.env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
+ALLOWED_HOSTS = config.env.list('ALLOWED_HOSTS')
 
 
 # Application definition
@@ -32,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'drf_yasg',
+    'cloudinary',
     'users',
     'courses'
 ]
@@ -113,9 +111,13 @@ USE_TZ = True
 
 PUBLIC_DIR = BASE_DIR.path('public/')
 STATIC_ROOT = PUBLIC_DIR('static')
-STATIC_URL = env.str('STATIC_URL', default='/static/')
+STATIC_URL = config.env.str('STATIC_URL', default='/static/')
 MEDIA_ROOT = PUBLIC_DIR('media')
-MEDIA_URL = env.str('MEDIA_URL', default='/media/')
+MEDIA_URL = config.env.str('MEDIA_URL', default='/media/')
+
+# Media storage configuration
+
+config_media_storage()
 
 
 # Configure Heroku
