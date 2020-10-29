@@ -1,12 +1,13 @@
+import re
+
 import cloudinary
+from urllib.parse import urlparse
 
 from . import config
 from . import django as settings
 
 def config_media_storage():
     if not settings.DEBUG:
-        cloudinary.config(
-            cloud_name=config.env.str('CLOUDINARY_CLOUD_NAME'),
-            api_key = config.env.str('CLOUDINARY_API_KEY'),
-            api_secret=config.env.str('CLOUDINARY_API_SECRET')
-        )
+        netloc = urlparse(config.env.str('CLOURINARY_URL')).netloc
+        api_key, api_secret, cloud_name = re.split('[@:]', netloc)
+        cloudinary.config(cloud_name=cloud_name,api_key=api_key, api_secret=api_secret)
