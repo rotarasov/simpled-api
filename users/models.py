@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
-from cloudinary.models import CloudinaryField
+from cloudinary.models import CloudinaryField, CloudinaryResource
 from cloudinary import api
 
 from .managers import UserManager
@@ -34,5 +34,6 @@ class User(AbstractUser):
 
     def save(self, *args, **kwargs):
         if not self.image:
-            self.image = api.resource(f'{self.MEDIA_FOLDER}/default').get('url', '')
+            result = api.resource(f'{self.MEDIA_FOLDER}/default')
+            self.image = CloudinaryResource(**result)
         return super().save(*args, **kwargs)
