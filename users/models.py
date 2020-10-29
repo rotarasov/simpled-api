@@ -34,5 +34,5 @@ class User(AbstractUser):
 
     def save(self, *args, **kwargs):
         if not self.image:
-            self.image = api.resource(f'{self.MEDIA_FOLDER}/default').get('url', None)
+            self.image = api.resource(f'{self.MEDIA_FOLDER}/default').get('url', '')
         return super().save(*args, **kwargs)
