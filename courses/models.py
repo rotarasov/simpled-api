@@ -1,10 +1,15 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from cloudinary import api
+from cloudinary.models import CloudinaryField
+
 
 from simpled import settings
 
 # TODO add default for creator field to match current authorized user
 class Course(models.Model):
+    MEDIA_FOLDER = 'course_pics'
+
     class Languages(models.TextChoices):
         """
             Short alpha-2 code taken from ISO 639-1
@@ -29,7 +34,12 @@ class Course(models.Model):
         MATHEMATICS = 'math', _('Mathematics')
 
 
-    image = models.ImageField(_('image'), upload_to='course_pics', default='course_pics/default.png')
+    if settings.DEBUG:
+        image = models.ImageField(_('image'), upload_to=MEDIA_FOLDER, default=f'{MEDIA_FOLDER}/default.png')
+
+    else:
+        image = CloudinaryField(_('image'), folder=MEDIA_FOLDER)
+
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                 related_name='created_courses', related_query_name='created_course')
     title = models.CharField(_('title'), max_length=100, unique=True)
@@ -42,6 +52,10 @@ class Course(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.image:
+            self.image = api.resource(f'{self.MEDIA_FOLDER}/default').get('url', '')
 
 
 # class Task(models.Model):
