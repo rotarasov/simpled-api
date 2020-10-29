@@ -5,6 +5,7 @@ Automat==20.2.0
 certifi==2020.6.20
 cffi==1.14.3
 chardet==3.0.4
+cloudinary==1.22.0
 constantly==15.1.0
 coreapi==2.3.3
 coreschema==0.0.4
