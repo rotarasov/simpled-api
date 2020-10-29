@@ -70,7 +70,7 @@ ASGI_APPLICATION = 'simpled.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {'default': env.db('DATABASE_URL')}
+DATABASES = {'default': config.env.db('DATABASE_URL')}
 
 
 # Password validation
