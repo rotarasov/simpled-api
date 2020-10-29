@@ -27,7 +27,7 @@ class Course(models.Model):
         DESIGN = 'design', _('Design')
         ARTS = 'arts', _('Arts')
         BUSINESS = 'business', _('Business')
-        LANGUAGE_LEARNING = 'language_learning', _('Language learning')
+        LANGUAGE_LEARNING = 'language', _('Language')
         PROGRAMMING = 'programming', _('Programming')
         HEALTH = 'health', _('Health')
         SOCIAL_SCIENCE = 'social_science', _('Social science')
