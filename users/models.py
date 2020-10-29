@@ -1,13 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
-from cloudinary.models import CloudinaryField, CloudinaryResource
+from cloudinary.models import CloudinaryField
 from cloudinary import api
 
 from .managers import UserManager
 from simpled import settings
 
-# TODO: create post delete hook to delete picture from cloudinary
+
 class User(AbstractUser):
     MEDIA_FOLDER = 'profile_pics'
 
