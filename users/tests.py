@@ -3,6 +3,7 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APITestCase
+from cloudinary import api
 
 class UsersManagersTests(TestCase):
     def test_create_user(self):
@@ -28,7 +29,6 @@ class UsersManagersTests(TestCase):
         with self.assertRaises(TypeError):
             User.objects.create_user(email='normal@user.com', password="foo", first_name='')
 
-
     def test_create_superuser(self):
         User = get_user_model()
         admin_user = User.objects.create_superuser(email='super@user.com', password='foo',
@@ -45,6 +45,14 @@ class UsersManagersTests(TestCase):
                 email='super@user.com', password='foo',
                 first_name='first name 1', last_name='last name 1',
                 is_superuser=False)
+
+    def test_user_image(self):
+        User = get_user_model()
+        user = User.objects.create_user(email='normal@user.com', password='foo',
+                                        first_name='first name 1', last_name='last name 1')
+        image = api.resource('profile_pics/default').get('url')
+        self.assertEqual(user.image.url, image)
+
 
 
 class UsersAPITestCase(APITestCase):
