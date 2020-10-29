@@ -1,12 +1,22 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
+from cloudinary.models import CloudinaryField
+from cloudinary import api
 
 from .managers import UserManager
+from simpled import settings
 
 
 class User(AbstractUser):
-    image = models.ImageField(_('profile image'), upload_to='profile_pics', default='profile_pics/default.jpg')
+    MEDIA_FOLDER = 'profile_pics'
+
+    if settings.DEBUG:
+        image = models.ImageField(_('profile image'), upload_to=MEDIA_FOLDER, default=f'{MEDIA_FOLDER}/default.jpg')
+
+    else:
+        image = CloudinaryField('image')
+
     username = None
     email = models.EmailField(_('email address'), unique=True)
     bio = models.TextField(_('biography'), blank=True)
@@ -21,3 +31,8 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+    def save(self, *args, **kwargs):
+        if not self.image:
+            self.image = api.resource(f'{self.MEDIA_FOLDER}/default').get('url', None)
+        return super().save(*args, **kwargs)
