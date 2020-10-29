@@ -6,6 +6,7 @@ from cloudinary.models import CloudinaryField
 
 from simpled import settings
 
+# TODO: create post delete hook to delete picture from cloudinary
 # TODO add default for creator field to match current authorized user
 class Course(models.Model):
     MEDIA_FOLDER = 'course_pics'
@@ -55,7 +56,8 @@ class Course(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.image:
-            self.image = api.resource(f'{self.MEDIA_FOLDER}/default').get('url', '')
+            result = api.resource(f'{self.MEDIA_FOLDER}/default')
+            self.image = f'v{result["version"]}/{result["public_id"]}'
 
 
 # class Task(models.Model):

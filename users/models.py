@@ -7,7 +7,7 @@ from cloudinary import api
 from .managers import UserManager
 from simpled import settings
 
-
+# TODO: create post delete hook to delete picture from cloudinary
 class User(AbstractUser):
     MEDIA_FOLDER = 'profile_pics'
 
@@ -35,5 +35,5 @@ class User(AbstractUser):
     def save(self, *args, **kwargs):
         if not self.image:
             result = api.resource(f'{self.MEDIA_FOLDER}/default')
-            self.image = CloudinaryResource(**result)
+            self.image = f'v{result["version"]}/{result["public_id"]}'
         return super().save(*args, **kwargs)
