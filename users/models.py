@@ -15,7 +15,7 @@ class User(AbstractUser):
         image = models.ImageField(_('profile image'), upload_to=MEDIA_FOLDER, default=f'{MEDIA_FOLDER}/default.jpg')
 
     else:
-        image = CloudinaryField('image')
+        image = CloudinaryField(_('profile image'), folder=MEDIA_FOLDER)
 
     username = None
     email = models.EmailField(_('email address'), unique=True)
