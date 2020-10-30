@@ -6,13 +6,13 @@ from .models import Course
 from .serializers import CourseSerializer
 
 
-# TODO: add course list
+# TODO: add course list and group by categories
 
 @api_view(http_method_names=['GET'])
 def get_all_categories(request):
     categories = {
         'categories': [
-            {'db value': category[0], 'human-readable name': category[1]} for category in Course.Categories.choices
+            {'db_value': category[0], 'human_readable_name': category[1]} for category in Course.Categories.choices
         ]
     }
     return Response(categories)
@@ -22,7 +22,7 @@ def get_all_categories(request):
 def get_all_languages(request):
     languages = {
         'languages': [
-            {'db value': language[0], 'human-readable name': language[1]} for language in Course.Languages.choices
+            {'db_value': language[0], 'human_readable_name': language[1]} for language in Course.Languages.choices
         ]
     }
     return Response(languages)
