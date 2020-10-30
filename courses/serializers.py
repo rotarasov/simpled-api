@@ -23,8 +23,10 @@ class CourseSerializer(serializers.ModelSerializer):
 
         super().__init__(*args, **kwargs)
 
-        if request and request.method == 'GET':
-            self.fields['creator'] = UserSerializer()
+        if (request
+                and request.query_params.get('nested', None) is not None
+                and request.method == 'GET'):
+            self.fields['creator'] = UserSerializer(read_only=True)
 
 
 

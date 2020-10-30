@@ -13,8 +13,10 @@ class UserSerializer(serializers.ModelSerializer):
 
         super().__init__(*args, **kwargs)
 
-        if request and request.query_params.get('nested', None) is not None:
+        if (request
+                and request.query_params.get('nested', None) is not None
+                and request.method == 'GET'):
             from courses.serializers import CourseSerializer
 
-            self.fields['added_courses'] = CourseSerializer(many=True, source='get_added_courses')
-            self.fields['enrolled_courses'] = CourseSerializer(many=True, source='get_enrolled_courses')
+            self.fields['added_courses'] = CourseSerializer(read_only=True, many=True, source='get_added_courses')
+            self.fields['enrolled_courses'] = CourseSerializer(read_only=True, many=True, source='get_enrolled_courses')
