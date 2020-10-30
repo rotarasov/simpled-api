@@ -10,21 +10,13 @@ from .serializers import CourseSerializer
 
 @api_view(http_method_names=['GET'])
 def get_all_categories(request):
-    categories = {
-        'categories': [
-            {'db_value': category[0], 'title': category[1]} for category in Course.Categories.choices
-        ]
-    }
+    categories = [{'db_value': category[0], 'title': category[1]} for category in Course.Categories.choices]
     return Response(categories)
 
 
 @api_view(http_method_names=['GET'])
 def get_all_languages(request):
-    languages = {
-        'languages': [
-            {'db_value': language[0], 'title': language[1]} for language in Course.Languages.choices
-        ]
-    }
+    languages = [{'db_value': language[0], 'title': language[1]} for language in Course.Languages.choices]
     return Response(languages)
 
 
