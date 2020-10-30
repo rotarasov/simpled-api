@@ -12,7 +12,7 @@ from .serializers import CourseSerializer
 def get_all_categories(request):
     categories = {
         'categories': [
-            {'db_value': category[0], 'human_readable_name': category[1]} for category in Course.Categories.choices
+            {'db_value': category[0], 'title': category[1]} for category in Course.Categories.choices
         ]
     }
     return Response(categories)
@@ -22,7 +22,7 @@ def get_all_categories(request):
 def get_all_languages(request):
     languages = {
         'languages': [
-            {'db_value': language[0], 'human_readable_name': language[1]} for language in Course.Languages.choices
+            {'db_value': language[0], 'title': language[1]} for language in Course.Languages.choices
         ]
     }
     return Response(languages)
