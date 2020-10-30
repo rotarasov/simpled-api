@@ -7,6 +7,7 @@ from cloudinary import api
 from .managers import UserManager
 from simpled import settings
 
+# TODO: create added courses and erolled courses foreign keys
 
 class User(AbstractUser):
     MEDIA_FOLDER = 'profile_pics'
@@ -31,6 +32,17 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+    def get_added_courses(self):
+        from courses.models import Course
+
+        return list(Course.objects.filter(creator_id=self.id))
+
+    def get_enrolled_courses(self):
+        from courses.models import Course
+
+        return list(Course.objects.filter(participants__in=[self.id]))
+
 
     def save(self, *args, **kwargs):
         if not self.image:
