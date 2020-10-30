@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from cloudinary import api
@@ -47,7 +49,7 @@ class Course(models.Model):
     description = models.TextField(_('description'), blank=True)
     category = models.CharField(_('category'), max_length=50, choices=Categories.choices)
     language = models.CharField(_('language'), max_length=3, choices=Languages.choices)
-    start_date = models.DateField(_('start date'), auto_now_add=True)
+    start_date = models.DateField(_('start date'), default=date.today)
     participants = models.ManyToManyField(settings.AUTH_USER_MODEL, db_table='participation',
                                           related_name='attended_courses', related_query_name='attended_course')
 
