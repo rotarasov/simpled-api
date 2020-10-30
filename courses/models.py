@@ -58,6 +58,7 @@ class Course(models.Model):
         if not self.image:
             result = api.resource(f'{self.MEDIA_FOLDER}/default')
             self.image = f'v{result["version"]}/{result["public_id"]}'
+        return super().save(*args, **kwargs)
 
 
 # class Task(models.Model):
