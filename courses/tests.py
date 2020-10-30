@@ -62,7 +62,7 @@ class CourseManagementAPITestCase(APITestCase):
     def test_course_creation(self):
         data = {'title': 'Course Title 2', 'category': 'math', 'language': 'en', 'description': 'Course description 2',
                 'creator': 1}
-        url = reverse('course-create')
+        url = reverse('course-list')
         response = self.client.post(url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Course.objects.count(), 2)

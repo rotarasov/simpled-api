@@ -1,4 +1,4 @@
-from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -20,9 +20,19 @@ def get_all_languages(request):
     return Response(languages)
 
 
-class CourseCreateAPIView(CreateAPIView):
+class CourseListCreateAPIView(ListCreateAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        data = {}
+
+        for category in Course.Categories.values:
+            serializer = CourseSerializer(queryset.filter(category=category), many=True)
+            data[category] = serializer.data
+
+        return Response(data)
 
 
 class CourseReadUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
