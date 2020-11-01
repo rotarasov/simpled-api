@@ -5,19 +5,17 @@ from cloudinary.models import CloudinaryField
 from cloudinary import api
 
 from .managers import UserManager
-from simpled import settings
 
 # TODO: create added courses and erolled courses foreign keys
+
+def image_default():
+    result = api.resource(f'{User.MEDIA_FOLDER}/default')
+    return f'{result["resource_type"]}/{result["type"]}/v{result["version"]}/{result["public_id"]}'
 
 class User(AbstractUser):
     MEDIA_FOLDER = 'profile_pics'
 
-    if settings.DEBUG:
-        image = models.ImageField(_('profile image'), upload_to=MEDIA_FOLDER, default=f'{MEDIA_FOLDER}/default.jpg')
-
-    else:
-        image = CloudinaryField(_('profile image'), folder=MEDIA_FOLDER)
-
+    image = CloudinaryField(_('profile image'), folder=MEDIA_FOLDER, default=image_default)
     username = None
     email = models.EmailField(_('email address'), unique=True)
     bio = models.TextField(_('biography'), blank=True)
@@ -42,10 +40,3 @@ class User(AbstractUser):
         from courses.models import Course
 
         return list(Course.objects.filter(participants__in=[self.id]))
-
-
-    def save(self, *args, **kwargs):
-        if not self.image:
-            result = api.resource(f'{self.MEDIA_FOLDER}/default')
-            self.image = f'v{result["version"]}/{result["public_id"]}'
-        return super().save(*args, **kwargs)
