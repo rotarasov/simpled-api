@@ -1,12 +1,11 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework import filters
 from rest_framework.decorators import api_view
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 
 from .models import Course
 from .serializers import CourseSerializer
 
-
-# TODO: add course list and group by categories
 
 @api_view(http_method_names=['GET'])
 def get_all_categories(request):
@@ -23,9 +22,16 @@ def get_all_languages(request):
 class CourseListCreateAPIView(ListCreateAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'description', 'category']
 
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
+        queryset = self.filter_queryset(self.get_queryset())
+
+        if request.query_params.get('search', None):
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+
         data = {}
 
         for category in Course.Categories.values:

@@ -2,28 +2,13 @@ from datetime import date
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.core.exceptions import ValidationError
-from cloudinary import api
 from cloudinary.models import CloudinaryField
-from cloudinary.exceptions import NotFound
 
+from . import services
 from simpled import settings
 
 # TODO: create post delete hook to delete picture from cloudinary
 # TODO add default for creator field to match current authorized user
-
-
-def image_default():
-    result = api.resource(f'{Course.MEDIA_FOLDER}/default')
-    return f'{result["resource_type"]}/{result["type"]}/v{result["version"]}/{result["public_id"]}'
-
-
-def validate_image(value):
-    try:
-        api.resource(value.public_id)
-    except NotFound:
-        raise ValidationError('Incorrect public id or image is not uploaded on media server')
-    return value
 
 
 class Course(models.Model):
@@ -52,7 +37,8 @@ class Course(models.Model):
         ENGINEERING = 'engineering', _('Engineering')
         MATHEMATICS = 'math', _('Mathematics')
 
-    image = CloudinaryField(_('image'), folder=MEDIA_FOLDER, default=image_default, validators=[validate_image])
+    image = CloudinaryField(_('image'), folder=MEDIA_FOLDER, default=services.get_default_course_image,
+                            validators=[services.validate_course_image])
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                 related_name='created_courses', related_query_name='created_course')
     title = models.CharField(_('title'), max_length=100, unique=True)
