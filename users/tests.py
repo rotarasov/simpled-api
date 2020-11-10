@@ -6,6 +6,7 @@ from rest_framework.test import APITestCase
 from cloudinary import api
 from cloudinary.models import CloudinaryResource
 
+
 class UsersManagersTests(TestCase):
     def test_create_user(self):
         User = get_user_model()
@@ -53,7 +54,6 @@ class UsersManagersTests(TestCase):
                                         first_name='first name 1', last_name='last name 1')
         result = CloudinaryResource(api.resource('profile_pics/default'))
         self.assertEqual(user.image.url, result.get_prep_value())
-
 
 
 class UsersAPITestCase(APITestCase):
@@ -113,6 +113,13 @@ class UsersAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(User.objects.count(), self.users_count - 1)
 
-
-
+    def test_token_access(self):
+        token_obtain_url = reverse('token-obtain-pair')
+        response = self.client.post(token_obtain_url, data={'email': 'u1@gmail.com', 'password': 'p1'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        refresh = response.data['refresh']
+        refresh_token_url = reverse('token-refresh')
+        response = self.client.post(refresh_token_url, data={'refresh': refresh})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNotNone(response.data['access'])
 
