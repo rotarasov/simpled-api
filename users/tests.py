@@ -69,6 +69,12 @@ class UsersAPITestCase(APITestCase):
                                  first_name='first_name2', last_name='last_name2')
 
         self.users_count = User.objects.count()
+        self.set_credentials()
+
+    def set_credentials(self):
+        response = self.client.post(self.obtain_token_url, data={'email': 'u1@gmail.com', 'password': 'p1'})
+        access_token = response.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {access_token}')
 
     def test_token_access(self):
         response = self.client.post(self.obtain_token_url, data={'email': 'u1@gmail.com', 'password': 'p1'})
@@ -79,22 +85,22 @@ class UsersAPITestCase(APITestCase):
         self.assertIsNotNone(response.data['access'])
 
     def test_user_creation(self):
-        data = {'email': 'u3@gmail.com', 'password':'p3', 'first_name': 'first_name3', 'last_name': 'last_name3'}
+        data = {'email': 'u3@gmail.com', 'password': 'p3', 'confirm_password': 'p3',
+                'first_name': 'first_name3', 'last_name': 'last_name3'}
         response = self.client.post(self.create_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(User.objects.count(), self.users_count + 1)
 
     def test_user_read(self):
         user = User.objects.get(pk=1)
-        response = self.client.post(self.obtain_token_url, data={'email': 'u1@gmail.com', 'password': 'p1'})
-        access_token = response.data['access']
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {access_token}')
         response = self.client.get(self.detail_url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['email'], user.email)
         self.assertEqual(response.data['first_name'], user.first_name)
         self.assertEqual(response.data['last_name'], user.last_name)
         self.assertIsNotNone(response.data['image'])
+        self.assertIsNone(response.data.get('password', None))
+        self.assertIsNone(response.data.get('confirm_password', None))
 
     def test_user_update(self):
         data = {'email': 'u2@gmail.com'}
@@ -104,15 +110,17 @@ class UsersAPITestCase(APITestCase):
 
         data['email'] = 'u3@gmail.com'
         response = self.client.patch(self.detail_url, data=data, format='json')
+        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['email'], 'u3@gmail.com')
 
-        data = {'pk': 1, 'email': 'u4@gmail.com', 'password': 'p4',
+        data = {'pk': 1, 'email': 'u4@gmail.com', 'password': 'p4', 'confirm_password': 'p4',
                 'first_name': 'first_name4', 'last_name': 'last_name4'}
         response = self.client.put(self.detail_url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['email'], 'u4@gmail.com')
         self.assertEqual(response.data['first_name'], 'first_name4')
+        self.assertIsNone(response.data.get('password', None))
 
     def test_user_delete(self):
         response = self.client.delete(self.detail_url)
