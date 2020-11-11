@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .serializers import UserSerializer, UserReadSerializer, UserCreateUpdateSerializer
+from .serializers import UserSerializer, UserReadSerializer, UserCreateUpdateSerializer, CustomTokenObtainPairSerializer
 
 
 User = get_user_model()
@@ -25,3 +26,7 @@ class UserReadUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
             return UserCreateUpdateSerializer
         else:
             return UserSerializer
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
