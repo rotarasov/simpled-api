@@ -39,7 +39,7 @@ class CourseListCreateAPIView(ListCreateAPIView):
         data = {}
 
         for category in Course.Categories.values:
-            serializer = CourseSerializer(queryset.filter(category=category), many=True)
+            serializer = self.get_serializer(queryset.filter(category=category), many=True)
             data[category] = serializer.data
 
         return Response(data)
