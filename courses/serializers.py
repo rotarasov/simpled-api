@@ -9,9 +9,7 @@ User = get_user_model()
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    # Uncomment when authorisation is provided
-    # creator = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
-    creator = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    creator = serializers.HiddenField(default=serializers.CurrentUserDefault())
     participants = UserSerializer(read_only=True, many=True)
 
     class Meta:
@@ -23,10 +21,17 @@ class CourseSerializer(serializers.ModelSerializer):
 
         super().__init__(*args, **kwargs)
 
-        if (request
-                and request.query_params.get('nested', None) is not None
-                and request.method == 'GET'):
-            self.fields['creator'] = UserSerializer(read_only=True)
+        if not request:
+            return
+
+        method = request.method
+        if method == 'GET':
+            if request.query_params.get('nested', None) is not None:
+                self.fields['creator'] = UserSerializer()
+
+            else:
+                self.fields['creator'] = serializers.PrimaryKeyRelatedField(read_only=True)
+
 
 
 
