@@ -6,6 +6,7 @@ from . import views
 urlpatterns = [
     path('<int:pk>', views.UserReadUpdateDeleteAPIView.as_view(), name='user-detail'),
     path('', views.UserCreateAPIView.as_view(), name='user-create'),
-    path('token/', views.CustomTokenObtainPairView.as_view(), name='token-obtain-pair'),
-    path('refresh/', TokenRefreshView.as_view(), name='token-refresh')
+    path('token/', views.CustomTokenObtainPairAPIView.as_view(), name='token-obtain-pair'),
+    path('refresh/', TokenRefreshView.as_view(), name='token-refresh'),
+    path('<int:pk>/change-password/', views.UserUpdatePasswordAPIVIew.as_view(), name='change-password')
 ]

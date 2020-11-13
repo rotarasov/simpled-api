@@ -61,6 +61,7 @@ class UsersAPITestCase(APITestCase):
     detail_url = reverse('user-detail', kwargs={'pk': 1})
     obtain_token_url = reverse('token-obtain-pair')
     refresh_token_url = reverse('token-refresh')
+    change_password_url = reverse('change-password', kwargs={'pk': 1})
 
     def setUp(self) -> None:
         User.objects.create_user(email='u1@gmail.com', password='p1',
@@ -69,7 +70,6 @@ class UsersAPITestCase(APITestCase):
                                  first_name='first_name2', last_name='last_name2')
 
         self.users_count = User.objects.count()
-        self.set_credentials()
 
     def set_credentials(self):
         response = self.client.post(self.obtain_token_url, data={'email': 'u1@gmail.com', 'password': 'p1'})
@@ -90,9 +90,11 @@ class UsersAPITestCase(APITestCase):
         response = self.client.post(self.create_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(User.objects.count(), self.users_count + 1)
+        self.assertNotEqual(User.objects.get(email='u3@gmail.com').password, 'p3')
 
     def test_user_read(self):
         user = User.objects.get(pk=1)
+        self.set_credentials()
         response = self.client.get(self.detail_url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['email'], user.email)
@@ -105,17 +107,16 @@ class UsersAPITestCase(APITestCase):
     def test_user_update(self):
         data = {'email': 'u2@gmail.com'}
 
+        self.set_credentials()
         response = self.client.patch(self.detail_url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         data['email'] = 'u3@gmail.com'
         response = self.client.patch(self.detail_url, data=data, format='json')
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['email'], 'u3@gmail.com')
 
-        data = {'pk': 1, 'email': 'u4@gmail.com', 'password': 'p4', 'confirm_password': 'p4',
-                'first_name': 'first_name4', 'last_name': 'last_name4'}
+        data = {'pk': 1, 'email': 'u4@gmail.com', 'first_name': 'first_name4', 'last_name': 'last_name4'}
         response = self.client.put(self.detail_url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['email'], 'u4@gmail.com')
@@ -123,7 +124,17 @@ class UsersAPITestCase(APITestCase):
         self.assertIsNone(response.data.get('password', None))
 
     def test_user_delete(self):
+        self.set_credentials()
         response = self.client.delete(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(User.objects.count(), self.users_count - 1)
+
+    def test_password_change(self):
+        old_password_hashed = User.objects.get(pk=1).password
+        data = {'old_password': 'p1', 'new_password': 'p4', 'confirm_password': 'p4'}
+        self.set_credentials()
+        response = self.client.put(self.change_password_url, data=data, format='json')
+        new_password_hashed = User.objects.get(pk=1).password
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotEqual(old_password_hashed, new_password_hashed)
 

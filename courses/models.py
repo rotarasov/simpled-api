@@ -8,7 +8,6 @@ from . import services
 from simpled import settings
 
 # TODO: create post delete hook to delete picture from cloudinary
-# TODO add default for creator field to match current authorized user
 
 
 class Course(models.Model):
@@ -54,9 +53,9 @@ class Course(models.Model):
 
 
 # class Task(models.Model):
-#
 #     title = models.CharField(_('title'), max_length=100)
-#     description = None
+#     description = models.TextField(_('description'))
+#     deadline = models.DateTimeField(_('deadline'), validators=)
 #     course = models.ForeignKey('Course', on_delete=models.CASCADE)
 #
 #     def __str__(self):
