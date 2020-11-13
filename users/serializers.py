@@ -66,7 +66,7 @@ class UserUpdatePasswordSerializer(serializers.Serializer):
         new_password = attrs.get('new_password')
 
         if old_password == new_password:
-            raise ValidationError(_('Passwords can not be equal'))
+            raise ValidationError(_('Old and new passwords can not be equal'))
 
         return attrs
 
