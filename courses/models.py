@@ -59,16 +59,27 @@ class Task(models.Model):
         MinValueValidator(timezone.now, message='Deadline must be greater than now')
     ])
     course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='tasks')
+    created = models.DateTimeField(_('created'), auto_now_add=True)
+    last_modified = models.DateTimeField(_('last modified'), auto_now=True)
+
+    class Meta:
+        unique_together = ['title', 'course']
 
     def __str__(self):
         return self.title
 
 
 class Solution(models.Model):
+    FILE_FOLDER = 'solutions'
+
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='solutions')
     task = models.ForeignKey('Task', on_delete=models.CASCADE, related_name='solutions')
     text = models.TextField(_('text'), null=True, blank=True)
-    file = models.FileField(_('file'), null=True, blank=True)
+    file = CloudinaryField(_('file'), folder=FILE_FOLDER, resource_type='raw', null=True, blank=True)
+    last_modified = models.DateTimeField(_('last modified'), auto_now=True)
+
+    class Meta:
+        unique_together = ['owner', 'task']
 
     def __str__(self):
         return f'{self.task} - {self.owner}'
