@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
-from rest_framework.generics import RetrieveUpdateDestroyAPIView, CreateAPIView, UpdateAPIView
+from rest_framework.generics import RetrieveUpdateDestroyAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .serializers import (
@@ -14,6 +15,15 @@ from .serializers import (
 
 
 User = get_user_model()
+
+
+@api_view(http_method_names=['PUT'])
+@permission_classes([IsAuthenticated])
+def update_user_password(request, *args, **kwargs):
+    serializer = UserUpdatePasswordSerializer(data=request.data, context={'request': request})
+    serializer.is_valid(raise_exception=True)
+    user_serializer = UserSerializer(serializer.save())
+    return Response(user_serializer.data)
 
 
 class UserCreateAPIView(CreateAPIView):
@@ -29,18 +39,6 @@ class UserReadUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
         if self.request.method == 'GET':
             return UserReadSerializer
         return UserSerializer
-
-
-class UserUpdatePasswordAPIVIew(UpdateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserUpdatePasswordSerializer
-    permission_classes = [IsAuthenticated]
-
-    def update(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user_serializer = UserSerializer(serializer.save())
-        return Response(user_serializer.data)
 
 
 class CustomTokenObtainPairAPIView(TokenObtainPairView):
