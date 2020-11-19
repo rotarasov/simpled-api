@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 
-from .models import Course
+from .models import Course, Task, Solution
 from users.serializers import UserSerializer
 
 
@@ -33,5 +34,26 @@ class CourseSerializer(serializers.ModelSerializer):
                 self.fields['creator'] = serializers.PrimaryKeyRelatedField(read_only=True)
 
 
+class TaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = '__all__'
 
 
+class SolutionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Solution
+        fields = '__all__'
+
+    def validate(self, attrs):
+        text = attrs.get('text', None)
+        file = attrs.get('file', None)
+
+        if not text and not file:
+            raise serializers.ValidationError(_('Either file or text must be sent'))
+
+        return attrs
+
+
+class SolutionOwnerDetailSerializer(SolutionSerializer):
+    owner = UserSerializer()
