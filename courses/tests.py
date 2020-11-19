@@ -51,8 +51,6 @@ class CourseManagementAPITestCase(APITestCase):
     obtain_token_url = reverse('token-obtain-pair')
     task_list_url = reverse('task-list', kwargs={'pk': 1})
     task_detail_url = reverse('task-detail', kwargs={'course_pk': 1, 'task_pk': 1})
-    solution_list_url = reverse('solution-list', kwargs={'pk': 1})
-    solution_detail_url = reverse('solution-detail', kwargs={'course_pk': 1, 'solution_pk': 1})
 
     def setUp(self) -> None:
         user = User.objects.create_user(email='normal@user.com', password='foo',
@@ -104,8 +102,8 @@ class AssessmentManagementAPITestCase(APITestCase):
     obtain_token_url = reverse('token-obtain-pair')
     task_list_url = reverse('task-list', kwargs={'pk': 1})
     task_detail_url = reverse('task-detail', kwargs={'course_pk': 1, 'task_pk': 1})
-    solution_list_url = reverse('solution-list', kwargs={'pk': 1})
-    solution_detail_url = reverse('solution-detail', kwargs={'course_pk': 1, 'solution_pk': 1})
+    solution_list_url = reverse('solution-list', kwargs={'course_pk': 1, 'task_pk': 1})
+    solution_detail_url = reverse('solution-detail', kwargs={'course_pk': 1, 'task_pk': 1, 'solution_pk': 1})
 
     def setUp(self) -> None:
         user = User.objects.create_user(email='normal@user.com', password='foo',
