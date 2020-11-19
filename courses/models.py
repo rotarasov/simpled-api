@@ -1,13 +1,13 @@
 from datetime import date
 
+from django.core.validators import MinValueValidator
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from cloudinary.models import CloudinaryField
 
 from . import services
 from simpled import settings
-
-# TODO: create post delete hook to delete picture from cloudinary
 
 
 class Course(models.Model):
@@ -52,12 +52,23 @@ class Course(models.Model):
         return self.title
 
 
-# class Task(models.Model):
-#     title = models.CharField(_('title'), max_length=100)
-#     description = models.TextField(_('description'))
-#     deadline = models.DateTimeField(_('deadline'), validators=)
-#     course = models.ForeignKey('Course', on_delete=models.CASCADE)
-#
-#     def __str__(self):
-#         return self.title
+class Task(models.Model):
+    title = models.CharField(_('title'), max_length=100)
+    description = models.TextField(_('description'))
+    deadline = models.DateTimeField(_('deadline'), validators=[
+        MinValueValidator(timezone.now, message='Deadline must be greater than now')
+    ])
+    course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='tasks')
 
+    def __str__(self):
+        return self.title
+
+
+class Solution(models.Model):
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='solutions')
+    task = models.ForeignKey('Task', on_delete=models.CASCADE, related_name='solutions')
+    text = models.TextField(_('text'), null=True, blank=True)
+    file = models.FileField(_('file'), null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.task} - {self.owner}'
