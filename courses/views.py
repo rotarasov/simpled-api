@@ -77,7 +77,7 @@ class SolutionListCreateAPIView(ListCreateAPIView):
         return SolutionSerializer
 
     def get_queryset(self):
-        return Solution.objects.filter(task__course_id=self.kwargs['pk'])
+        return Solution.objects.filter(task_id=self.kwargs['task_pk'])
 
 
 class SolutionReadUpdateDeleteAPIVIew(RetrieveUpdateDestroyAPIView):
@@ -86,4 +86,4 @@ class SolutionReadUpdateDeleteAPIVIew(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Solution.objects.filter(task__course_id=self.kwargs['course_pk'])
+        return Solution.objects.filter(task_id=self.kwargs['task_pk'])
