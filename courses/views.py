@@ -53,6 +53,7 @@ class CourseReadUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
 
 class TaskListCreateAPIVIew(ListCreateAPIView):
     serializer_class = TaskSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Task.objects.filter(course_id=self.kwargs['pk'])
@@ -61,12 +62,15 @@ class TaskListCreateAPIVIew(ListCreateAPIView):
 class TaskReadUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = TaskSerializer
     lookup_url_kwarg = 'task_pk'
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Task.objects.filter(course_id=self.kwargs['course_pk'])
 
 
 class SolutionListCreateAPIView(ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return SolutionOwnerDetailSerializer
@@ -79,6 +83,7 @@ class SolutionListCreateAPIView(ListCreateAPIView):
 class SolutionReadUpdateDeleteAPIVIew(RetrieveUpdateDestroyAPIView):
     serializer_class = SolutionSerializer
     lookup_url_kwarg = 'solution_pk'
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Solution.objects.filter(task__course_id=self.kwargs['course_pk'])
