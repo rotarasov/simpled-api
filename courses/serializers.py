@@ -41,9 +41,12 @@ class TaskSerializer(serializers.ModelSerializer):
 
 
 class SolutionSerializer(serializers.ModelSerializer):
+    owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = Solution
         fields = '__all__'
+        extra_kwargs = {'task': {'read_only': True}}
 
     def validate(self, attrs):
         text = attrs.get('text', None)
