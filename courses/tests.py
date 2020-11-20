@@ -103,6 +103,7 @@ class AssessmentManagementAPITestCase(APITestCase):
     task_list_url = reverse('task-list', kwargs={'pk': 1})
     task_detail_url = reverse('task-detail', kwargs={'course_pk': 1, 'task_pk': 1})
     solution_list_url = reverse('solution-list', kwargs={'course_pk': 1, 'task_pk': 1})
+    solution_list_url_2 = reverse('solution-list', kwargs={'course_pk': 2, 'task_pk': 2})
     solution_detail_url = reverse('solution-detail', kwargs={'course_pk': 1, 'task_pk': 1, 'solution_pk': 1})
 
     def setUp(self) -> None:
@@ -116,8 +117,16 @@ class AssessmentManagementAPITestCase(APITestCase):
             description='Course description 1'
         )
 
+        course2 = Course.objects.create(
+            title='Course Title 2',
+            category='music',
+            language='ru',
+            creator=user,
+            description='Course description 2'
+        )
+
         task1 = Task.objects.create(title='t1', description='d1', deadline='2020-11-20T00:00Z', course=course)
-        task2 = Task.objects.create(title='t2', description='d2', deadline='2020-11-20T00:00Z', course=course)
+        task2 = Task.objects.create(title='t2', description='d2', deadline='2020-11-20T00:00Z', course=course2)
 
         Solution.objects.create(owner=user, task=task1, text='t1')
 
@@ -150,10 +159,10 @@ class AssessmentManagementAPITestCase(APITestCase):
         self.assertTrue(isinstance(response.data[0]['owner'], dict))
 
     def test_solution_create(self):
-        data = {'owner': 1, 'task': 2, 'text': 't2', 'course': 1}
-        response = self.client.post(self.solution_list_url, format='json', data=data)
+        data = {'text': 't2'}
+        response = self.client.post(self.solution_list_url_2, format='json', data=data)
+        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['owner'], 1)
         self.assertEqual(response.data['task'], 2)
         self.assertEqual(response.data['text'], 't2')
 
