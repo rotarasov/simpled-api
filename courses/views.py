@@ -78,7 +78,7 @@ class SolutionListCreateAPIView(ListCreateAPIView):
 
     def get_queryset(self):
         course = get_object_or_404(Course, pk=self.kwargs['course_pk'])
-        task = get_object_or_404(Task, pk=self.kwargs['pk'], course=course)
+        task = get_object_or_404(Task, pk=self.kwargs['task_pk'], course=course)
         return Solution.objects.filter(task=task)
 
     def perform_create(self, serializer):
