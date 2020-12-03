@@ -62,6 +62,7 @@ class UsersAPITestCase(APITestCase):
     obtain_token_url = reverse('token-obtain-pair')
     refresh_token_url = reverse('token-refresh')
     change_password_url = reverse('change-password', kwargs={'pk': 1})
+    users_for_video_chat_url = reverse('video-chat-user-list')
 
     def setUp(self) -> None:
         User.objects.create_user(email='u1@gmail.com', password='p1',
@@ -137,4 +138,10 @@ class UsersAPITestCase(APITestCase):
         new_password_hashed = User.objects.get(pk=1).password
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertNotEqual(old_password_hashed, new_password_hashed)
+
+    def test_users_for_video_chat_read(self):
+        self.set_credentials()
+        response = self.client.get(self.users_for_video_chat_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        print(response.data)
 
