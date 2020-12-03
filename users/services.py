@@ -18,3 +18,7 @@ def validate_user_image(value: CloudinaryResource) -> CloudinaryResource:
         raise ValidationError('Incorrect public id or image is not uploaded on media server')
     return value
 
+
+def get_users_for_video_chat_display():
+    User = get_user_model()
+    return User.objects.only('first_name', 'last_name').all()
