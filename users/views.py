@@ -10,9 +10,9 @@ from .serializers import (
     UserReadSerializer,
     UserCreateSerializer,
     CustomTokenObtainPairSerializer,
-    UserUpdatePasswordSerializer
-)
-
+    UserUpdatePasswordSerializer,
+    UserForVideoChatSerializer)
+from .services import get_users_for_video_chat_display
 
 User = get_user_model()
 
@@ -24,6 +24,14 @@ def update_user_password(request, *args, **kwargs):
     serializer.is_valid(raise_exception=True)
     user_serializer = UserSerializer(serializer.save())
     return Response(user_serializer.data)
+
+
+@api_view(http_method_names=['GET'])
+@permission_classes([IsAuthenticated])
+def get_all_user_video_chat_profiles(request, *args, **kwargs):
+    users = get_users_for_video_chat_display()
+    serializer = UserForVideoChatSerializer(users, many=True)
+    return Response(serializer.data)
 
 
 class UserCreateAPIView(CreateAPIView):
