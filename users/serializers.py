@@ -8,6 +8,14 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 User = get_user_model()
 
 
+class UserForVideoChatSerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField(source='get_full_name')
+
+    class Meta:
+        model = User
+        fields = ['id', 'full_name']
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
