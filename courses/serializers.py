@@ -33,6 +33,15 @@ class CourseSerializer(serializers.ModelSerializer):
             else:
                 self.fields['creator'] = serializers.PrimaryKeyRelatedField(read_only=True)
 
+    def update(self, instance, validated_data):
+        is_active = validated_data.get('is_active', True)
+        make_inactive = not is_active
+
+        if instance.is_active and make_inactive:
+            instance.archive_tasks()
+
+        return super().update(instance, validated_data)
+
 
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
