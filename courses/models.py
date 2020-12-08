@@ -47,9 +47,15 @@ class Course(models.Model):
     start_date = models.DateField(_('start date'), default=date.today)
     participants = models.ManyToManyField(settings.AUTH_USER_MODEL, db_table='participation',
                                           related_name='attended_courses', related_query_name='attended_course')
+    is_active = models.BooleanField(_("is active"), default=True)
 
     def __str__(self):
         return self.title
+
+    def archive_tasks(self):
+        for task in self.tasks.all():
+            task.is_active = False
+            task.save()
 
 
 class Task(models.Model):
@@ -61,6 +67,7 @@ class Task(models.Model):
     course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='tasks')
     created = models.DateTimeField(_('created'), auto_now_add=True)
     last_modified = models.DateTimeField(_('last modified'), auto_now=True)
+    is_active = models.BooleanField(_("is active"), default=True)
 
     class Meta:
         unique_together = ['title', 'course']
