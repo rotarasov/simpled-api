@@ -45,17 +45,27 @@ class Course(models.Model):
     category = models.CharField(_('category'), max_length=50, choices=Categories.choices)
     language = models.CharField(_('language'), max_length=3, choices=Languages.choices)
     start_date = models.DateField(_('start date'), default=date.today)
-    participants = models.ManyToManyField(settings.AUTH_USER_MODEL, db_table='participation',
+    participants = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Participation',
                                           related_name='attended_courses', related_query_name='attended_course')
     is_active = models.BooleanField(_("is active"), default=True)
 
     def __str__(self):
         return self.title
 
-    def archive_tasks(self):
+    def delete_solutions(self):
         for task in self.tasks.all():
-            task.is_active = False
-            task.save()
+            task.solutions.delete()
+
+    def delete_participants(self):
+        Participation.objects.filter(course_id=self.id).delete()
+
+
+class Participation(models.Model):
+    participant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                                    related_name='participations', related_query_name='participation')
+    course = models.ForeignKey('Course',  on_delete=models.CASCADE,
+                               related_name='participations', related_query_name='participation')
+    is_active = models.BooleanField(_("is active"), default=True)
 
 
 class Task(models.Model):
@@ -67,7 +77,6 @@ class Task(models.Model):
     course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='tasks')
     created = models.DateTimeField(_('created'), auto_now_add=True)
     last_modified = models.DateTimeField(_('last modified'), auto_now=True)
-    is_active = models.BooleanField(_("is active"), default=True)
 
     class Meta:
         unique_together = ['title', 'course']
