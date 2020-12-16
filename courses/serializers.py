@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 
-from .models import Course, Task, Solution
+from .models import Course, Task, Solution, Participation
 from users.serializers import UserSerializer
 
 
@@ -11,7 +11,7 @@ User = get_user_model()
 
 class CourseSerializer(serializers.ModelSerializer):
     creator = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    participants = UserSerializer(read_only=True, many=True)
+    participants = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True)
 
     class Meta:
         model = Course
@@ -33,12 +33,18 @@ class CourseSerializer(serializers.ModelSerializer):
             else:
                 self.fields['creator'] = serializers.PrimaryKeyRelatedField(read_only=True)
 
+    def validate_participants(self, value):
+        if any(user == self.instance.creator for user in value):
+            raise serializers.ValidationError('Creator can not be participant of the course.')
+        return value
+
     def update(self, instance, validated_data):
         is_active = validated_data.get('is_active', True)
         make_inactive = not is_active
 
         if instance.is_active and make_inactive:
-            instance.archive_tasks()
+            instance.delete_solutions()
+            instance.delete_participants()
 
         return super().update(instance, validated_data)
 
@@ -51,18 +57,18 @@ class TaskSerializer(serializers.ModelSerializer):
 
 class SolutionSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    is_active = serializers.BooleanField(default=True)
 
     class Meta:
         model = Solution
         fields = '__all__'
-        extra_kwargs = {'task': {'read_only': True}}
 
     def validate(self, attrs):
-        text = attrs.get('text', None)
-        file = attrs.get('file', None)
+        text = attrs.get('text', getattr(self.instance, 'text', None))
+        file = attrs.get('file', getattr(self.instance, 'file', None))
 
         if not text and not file:
-            raise serializers.ValidationError(_('Either file or text must be sent'))
+            raise serializers.ValidationError(_('Either file or text must be sent.'))
 
         return attrs
 
