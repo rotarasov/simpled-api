@@ -54,7 +54,7 @@ class Course(models.Model):
 
     def delete_solutions(self):
         for task in self.tasks.all():
-            task.solutions.delete()
+            task.solutions.all().delete()
 
     def delete_participants(self):
         Participation.objects.filter(course_id=self.id).delete()
