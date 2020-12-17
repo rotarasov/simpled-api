@@ -8,7 +8,7 @@ class Message(models.Model):
     course = models.ForeignKey('courses.Course', on_delete=models.CASCADE, related_name='messages')
     sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='messages')
     text = models.CharField(_('text'), max_length=512)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(_('timestamp'))
 
     class Meta:
         ordering = ('timestamp',)
