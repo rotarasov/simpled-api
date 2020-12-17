@@ -38,7 +38,11 @@ class CourseSerializer(serializers.ModelSerializer):
 
     def validate_participants(self, value):
         if any(user == self.instance.creator for user in value):
-            raise serializers.ValidationError('Creator can not be participant of the course.')
+            raise serializers.ValidationError(_('Creator can not be participant of the course.'))
+
+        if len(set(value)) != len(value):
+            raise serializers.ValidationError(_('Participants can not ve duplicated in the list'))
+
         return value
 
     def update(self, instance, validated_data):
