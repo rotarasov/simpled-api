@@ -11,7 +11,6 @@ User = get_user_model()
 
 class CourseSerializer(serializers.ModelSerializer):
     creator = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    participants = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True)
     is_active = serializers.BooleanField(default=True)
 
     class Meta:
@@ -34,6 +33,8 @@ class CourseSerializer(serializers.ModelSerializer):
 
             else:
                 self.fields['creator'] = serializers.PrimaryKeyRelatedField(read_only=True)
+                self.fields['participants'] = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(),
+                                                                                 many=True)
 
     def validate_participants(self, value):
         if any(user == self.instance.creator for user in value):
