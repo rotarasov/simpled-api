@@ -65,7 +65,6 @@ class Participation(models.Model):
                                     related_name='participations', related_query_name='participation')
     course = models.ForeignKey('Course',  on_delete=models.CASCADE,
                                related_name='participations', related_query_name='participation')
-    is_active = models.BooleanField(_("is active"), default=True)
 
 
 class Task(models.Model):
