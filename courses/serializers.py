@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 
-from .models import Course, Task, Solution, Participation
+from .models import Course, Task, Solution
 from users.serializers import UserSerializer
 
 
@@ -12,6 +12,7 @@ User = get_user_model()
 class CourseSerializer(serializers.ModelSerializer):
     creator = serializers.HiddenField(default=serializers.CurrentUserDefault())
     participants = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True)
+    is_active = serializers.BooleanField(default=True)
 
     class Meta:
         model = Course
@@ -29,6 +30,7 @@ class CourseSerializer(serializers.ModelSerializer):
         if method == 'GET':
             if request.query_params.get('nested', None) is not None:
                 self.fields['creator'] = UserSerializer()
+                self.fields['participants'] = UserSerializer(many=True)
 
             else:
                 self.fields['creator'] = serializers.PrimaryKeyRelatedField(read_only=True)
