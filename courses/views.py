@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import filters, status
 from rest_framework.decorators import api_view
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, get_object_or_404
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, get_object_or_404, ListAPIView
 from rest_framework.response import Response
 
 from users.serializers import UserSerializer
@@ -51,12 +51,12 @@ class CourseReadUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = CourseSerializer
 
 
-class CurrentParticipantListAPIView(ListCreateAPIView):
+class CurrentParticipantListAPIView(ListAPIView):
     serializer_class = UserSerializer
 
     def get_queryset(self):
         course = get_object_or_404(Course, pk=self.kwargs['pk'])
-        return User.objects.filter(participation__is_active=True, participation__course=course)
+        return User.objects.filter(participation__course=course)
 
 
 class TaskListCreateAPIVIew(ListCreateAPIView):

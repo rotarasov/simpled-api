@@ -13,6 +13,6 @@ urlpatterns = [
          name='solution-list'),
     path('<int:course_pk>/tasks/<int:task_pk>/solutions/<int:solution_pk>/',
          views.SolutionReadUpdateDeleteAPIVIew.as_view(), name='solution-detail'),
-    path('<int:pk>/current-participants/',
+    path('<int:pk>/participants/',
          views.CurrentParticipantListAPIView.as_view(), name='course-current-participant-list')
 ]
