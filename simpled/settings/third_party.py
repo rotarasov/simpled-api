@@ -1,4 +1,4 @@
-# from . import config
+from . import config
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -14,11 +14,11 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True
 }
 
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-#         "CONFIG": {
-#             "hosts": config.env.str('REDIS_URL'),
-#         },
-#     },
-# }
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": config.env.str('REDIS_URL'),
+        },
+    },
+}
