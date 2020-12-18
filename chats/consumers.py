@@ -27,7 +27,7 @@ class AsyncChatConsumer(AsyncJsonWebsocketConsumer):
             print(f'CONNECT')
             self.chat_name = f'chat_{self.course_id}'
             await self.channel_layer.group_add(self.chat_name, self.channel_name)
-            await self.connect()
+            await self.accept()
 
         else:
             print(f'CLOSE')
