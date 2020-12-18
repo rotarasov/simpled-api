@@ -9,7 +9,7 @@ User = get_user_model()
 
 
 class MessageSerializer(serializers.ModelSerializer):
-    sender = UserSerializer(queryset=User.objects.all())
+    sender = UserSerializer()
 
     class Meta:
         model = Message
