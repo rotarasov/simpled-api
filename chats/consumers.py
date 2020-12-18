@@ -19,18 +19,14 @@ class AsyncChatConsumer(AsyncJsonWebsocketConsumer):
 
     async def connect(self):
         self.course_id = self.scope['url_route']['kwargs']['course_pk']
-        print('CONNECT')
 
         course_exists = await self.check_course_exists()
-        print(f'COURSE_EXISTS: {course_exists}')
         if course_exists:
-            print(f'CONNECT')
             self.chat_name = f'chat_{self.course_id}'
             await self.channel_layer.group_add(self.chat_name, self.channel_name)
             await self.accept()
 
         else:
-            print(f'CLOSE')
             await self.close()
 
     async def receive_json(self, content, **kwargs):
