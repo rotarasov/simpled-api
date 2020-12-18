@@ -1,4 +1,4 @@
-from . import config
+from . import configuration
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
