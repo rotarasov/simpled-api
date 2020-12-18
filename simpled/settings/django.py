@@ -1,19 +1,19 @@
 import environ
 import django_heroku
 
-from . import config
+from . import configuration
 from .utils import config_media_storage
 
 # Build paths inside the project like this: BASE_DIR('subdir').
 BASE_DIR = environ.Path(__file__) - 3
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config.env.str('SECRET_KEY')
+SECRET_KEY = configuration.env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config.env.bool('DEBUG', default=False)
+DEBUG = configuration.env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = config.env.list('ALLOWED_HOSTS')
+ALLOWED_HOSTS = configuration.env.list('ALLOWED_HOSTS')
 
 
 # Application definition
@@ -74,7 +74,7 @@ ASGI_APPLICATION = 'simpled.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {'default': config.env.db('DATABASE_URL')}
+DATABASES = {'default': configuration.env.db('DATABASE_URL')}
 
 
 # Password validation
@@ -115,9 +115,9 @@ USE_TZ = True
 
 PUBLIC_DIR = BASE_DIR.path('public/')
 STATIC_ROOT = PUBLIC_DIR('static')
-STATIC_URL = config.env.str('STATIC_URL', default='/static/')
+STATIC_URL = configuration.env.str('STATIC_URL', default='/static/')
 MEDIA_ROOT = PUBLIC_DIR('media')
-MEDIA_URL = config.env.str('MEDIA_URL', default='/media/')
+MEDIA_URL = configuration.env.str('MEDIA_URL', default='/media/')
 
 # Media storage configuration
 
