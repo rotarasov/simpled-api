@@ -68,7 +68,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'simpled.wsgi.application'
-ASGI_APPLICATION = 'simpled.asgi.application'
+ASGI_APPLICATION = 'simpled.routing.application'
 
 
 # Database
