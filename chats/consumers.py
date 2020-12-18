@@ -19,6 +19,7 @@ class AsyncChatConsumer(AsyncJsonWebsocketConsumer):
 
     async def connect(self):
         self.course_id = self.scope['url_route']['kwargs']['course_pk']
+        print("HELLO FROM THE OTHER SIDE")
 
         course_exists = await self.check_course_exists()
         if course_exists:
