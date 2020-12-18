@@ -8,8 +8,6 @@ from chats.routing import websocket_urlpatterns
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'simpled.settings')
 
-django.setup()
-
 http_application = get_asgi_application()
 
 application = ProtocolTypeRouter({
