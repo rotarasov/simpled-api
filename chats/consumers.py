@@ -30,7 +30,7 @@ class AsyncChatConsumer(AsyncJsonWebsocketConsumer):
             await self.close()
 
     async def receive_json(self, content, **kwargs):
-        await self.save_message(self.course_id, content)
+        await self.save_message(content)
         await self.channel_layer.group_send(self.chat_name, {
             'type': 'chat.message',
             'sender_id': content['sender_id'],
