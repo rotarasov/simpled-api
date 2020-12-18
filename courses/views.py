@@ -40,7 +40,7 @@ class CourseListCreateAPIView(ListCreateAPIView):
         data = {}
 
         for category in Course.Categories.values:
-            serializer = self.get_serializer(queryset.filter(category=category), many=True)
+            serializer = self.get_serializer(queryset.filter(category=category, is_active=True), many=True)
             data[category] = serializer.data
 
         return Response(data)
@@ -61,7 +61,10 @@ class CurrentParticipantListAPIView(ListAPIView):
 
 class TaskListCreateAPIVIew(ListCreateAPIView):
     serializer_class = TaskSerializer
-    queryset = Task.objects.all()
+
+    def get_queryset(self):
+        course = get_object_or_404(Course, pk=self.kwargs['pk'])
+        return Task.objects.filter(course=course)
 
 
 class TaskReadUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
