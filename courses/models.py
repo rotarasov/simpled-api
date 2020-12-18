@@ -81,7 +81,7 @@ class Task(models.Model):
         unique_together = ['title', 'course']
 
     def __str__(self):
-        return self.title
+        return f'Course: {self.course} - {self.title}'
 
 
 class Solution(models.Model):

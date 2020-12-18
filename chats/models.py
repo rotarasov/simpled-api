@@ -12,3 +12,6 @@ class Message(models.Model):
 
     class Meta:
         ordering = ('timestamp',)
+
+    def __str__(self):
+        return f'Course: {self.course.id} - Sender: {self.sender.id}'
