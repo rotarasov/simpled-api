@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from rest_framework import filters, status
+from rest_framework import filters
 from rest_framework.decorators import api_view
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, get_object_or_404, ListAPIView
 from rest_framework.response import Response
