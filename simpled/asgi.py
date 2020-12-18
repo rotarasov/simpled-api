@@ -13,6 +13,6 @@ from chats.consumers import AsyncChatConsumer
 application = ProtocolTypeRouter({
     "http": django_asgi_app,
     "websocket": URLRouter([
-        url(r"wss/chat/(?P<course_pk>[0-9]+)/", AsyncChatConsumer.as_asgi(), name='chat')
+        url(r"^ws/chat/(?P<course_pk>[0-9]+)/$", AsyncChatConsumer.as_asgi(), name='chat')
     ])
 })
