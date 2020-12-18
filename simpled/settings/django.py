@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
     'cloudinary',
-    'channels'
+    'channels',
 
     'users',
     'courses',
