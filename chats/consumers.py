@@ -14,8 +14,7 @@ class AsyncChatConsumer(AsyncJsonWebsocketConsumer):
     def save_message(self, message):
         Message.objects.create(course_id=self.course_id,
                                sender_id=message['sender_id'],
-                               text=message['text'],
-                               timestamp=message['timestamp'])
+                               text=message['text'])
 
     async def connect(self):
         self.course_id = self.scope['url_route']['kwargs']['course_pk']
@@ -36,13 +35,11 @@ class AsyncChatConsumer(AsyncJsonWebsocketConsumer):
             'sender_id': content['sender_id'],
             'full_name': content['full_name'],
             'text': content['text'],
-            'timestamp': content['timestamp']
         })
 
     async def chat_message(self, event):
         return await self.send_json({
             'sender_id': event['sender_id'],
             'full_name': event['full_name'],
-            'timestamp': event['timestamp'],
             'text': event['text']
         })
