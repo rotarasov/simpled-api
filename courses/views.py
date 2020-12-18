@@ -61,9 +61,7 @@ class CurrentParticipantListAPIView(ListAPIView):
 
 class TaskListCreateAPIVIew(ListCreateAPIView):
     serializer_class = TaskSerializer
-
-    def get_queryset(self):
-        return Task.objects.filter(course_id=self.kwargs['pk'])
+    queryset = Task.objects.all()
 
 
 class TaskReadUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
