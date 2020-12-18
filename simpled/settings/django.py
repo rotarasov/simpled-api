@@ -128,3 +128,13 @@ config_media_storage()
 
 django_heroku.settings(locals(), databases=False, secret_key=False, allowed_hosts=False)
 
+# Email configuration
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_PORT = 587
+EMAIL_HOST_USER = configuration.env.str('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = configuration.env.str('EMAIL_HOST_PASSWORD')
+
